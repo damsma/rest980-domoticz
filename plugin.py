@@ -1,5 +1,5 @@
 """
-<plugin key="rest980-domoticz" name="iRobot Roomba (rest980-domoticz)" version="0.0.1">
+<plugin key="rest980-domoticz" name="iRobot Roomba (rest980-domoticz)" version="0.0.2">
     <description>
       Simple plugin to manage iRobot Roomba
       <br/>
@@ -92,6 +92,29 @@ class BasePlugin:
 
     def onHeartbeat(self):
         Domoticz.Log("onHeartbeat called")
+        iUnit = -1
+        for Device in Devices:
+            try:
+                if (Devices[Device].DeviceID.strip() == "iRobot-Roomba"):
+                    iUnit = Device
+                    break
+            except:
+                pass
+
+        r = requests.get('http://'+str(Parameters["Address"])+':'+str(Parameters["Port"])+'/api/local/info/mission')
+        if(r.status_code == requests.codes.ok):
+            data = r.json()
+            #Domoticz.Log(str(data))
+            isOn = 0
+            if(data["cleanMissionStatus"]["cycle"] != "none"):
+                if(data["cleanMissionStatus"]["phase"] == "run"):
+                    isOn = 1
+            Devices[iUnit].Update(nValue=isOn,sValue="On", BatteryLevel=data["batPct"])
+            return True
+        else:
+            Domoticz.Log("ERROR IN RESPONSE!!!")
+            return False
+
 
 global _plugin
 _plugin = BasePlugin()
