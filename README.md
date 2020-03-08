@@ -22,6 +22,8 @@ Type in the right values for your Roomba, should look something like this:
 
 and save the config file
 
+see <a href="https://github.com/koalazak/dorita980#how-to-get-your-usernameblid-and-password" target="_new">dorita980</a> for more information and instructions for obtaining blid and password.
+
 Start rest980 forever with with PM2
 <pre><code>npm i -g pm2
 pm2 startup
